@@ -1,0 +1,26 @@
+{
+  "name": "formula-1",
+  "version": "1.0.0",
+  "description": "formula-1",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "SET NODE_ENV=PRODUCTION&&SET MONGO_USER=raj&&SET MONGO_PASSWORD=EvlYbfEtt2QJ889N&&SET MONGO_DEFAULT_DATABASE=formula1&&node app.js",
+    "start-sever": "node app.js",
+    "start:dev": "nodemon app.js"
+  },
+  "author": "Raj",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^0.27.2",
+    "body-parser": "^1.20.0",
+    "cron": "^2.0.0",
+    "express": "^4.18.1",
+    "mongodb": "^4.7.0",
+    "mongoose": "^6.3.6",
+    "winston": "^3.7.2"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.16"
+  }
+}

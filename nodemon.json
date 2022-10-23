@@ -1,0 +1,9 @@
+{
+    "env": {
+        "ROOT_URL": "http://localhost:8888",
+        "NODE_ENV": "DEVELOPMENT",
+        "MONGO_USER": "raj",
+        "MONGO_PASSWORD": "EvlYbfEtt2QJ889N",
+        "MONGO_DEFAULT_DATABASE": "formula1"
+    }
+}
