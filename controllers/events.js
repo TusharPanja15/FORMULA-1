@@ -4,6 +4,7 @@ const logger = require('../log/winston');
 const Event = require('../models/events');
 const User = require('../models/user');
 const Order = require('../models/order');
+const mailer = require('../utils/mailer');
 
 exports.getEvents = async (req, res, next) => {
     try {
@@ -112,6 +113,17 @@ exports.createOrder = async (req, res, next) => {
 
         await order.save();
         await req.user.clearCart();
+        await mailer({
+            to: process.env.TEST_EMAIL,
+            subject: `[ ORDER_ID: ${order._id} ] has been created!`,
+            html: `
+                <h5>Hi ${req.user.name},</h5>
+                <p>Thanks for shopping with us!</p>
+                <p>Your order with id '${order._id}' has been placed successfully. Please find the invoice attached to your order and enjoy your weekend.</p>
+                <h5>Thanks and Regards,</h5>
+                <h5>FIA</h5>
+            `
+        });
 
         res.status(201).json({
             message: "Order placed."
