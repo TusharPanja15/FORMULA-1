@@ -4,6 +4,12 @@
         "NODE_ENV": "DEVELOPMENT",
         "MONGO_USER": "raj",
         "MONGO_PASSWORD": "EvlYbfEtt2QJ889N",
-        "MONGO_DEFAULT_DATABASE": "formula1"
+        "MONGO_DEFAULT_DATABASE": "formula1",
+        "EMAIL_SERVICE": "Outlook365",
+        "EMAIL_HOST": "outlook.office365.com",
+        "EMAIL_PORT": "995",
+        "EMAIL_ID": "dev.magneto@outlook.com",
+        "EMAIL_PASS": "bravoSix@141",
+        "TEST_EMAIL": "tushar.panja@nagarro.com"
     }
 }
