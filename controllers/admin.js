@@ -19,27 +19,23 @@ exports.postEvent = async (req, res, next) => {
     });
 
     try {
-
         await event.save();
 
         const response = {
             responseCode: 201,
             message: 'Event added successfully',
             eventData: event
-        }
+        };
 
         res.status(201).json(response);
-
         logger.info(JSON.stringify(response));
-
     } catch (err) {
         const response = {
             responseCode: 401,
             message: 'Cound not add event'
         }
-        
-        res.status(401).json(response);
 
+        res.status(401).json(response);
         logger.error(err);
         logger.error(JSON.stringify(response));
     }
