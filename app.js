@@ -41,15 +41,13 @@ app.use((req, res, next) => {
 app.use('/events', eventRoute);
 app.use('/admin', adminRoute);
 
-// var job = new CronJob('* * * * * *', () => {
-// 		console.log('You will see this message every second');
-// 	},
-// 	null,
-// 	true,
-// 	'Asia/Kolkata'
-// );
-
-// job.start();
+app.use((error, req, res, next) => {
+    // console.log(error)
+    res.status(500).json({
+        message: "Something went wrong!",
+        error: error
+    });
+});
 
 mongoose
     .connect(MONGODB_URI)
