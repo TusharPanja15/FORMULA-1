@@ -10,19 +10,21 @@ const transporter = nodemailer.createTransport({
     }
 });
 
-const mailer = async ({ to, subject, html }) => {
-    try {
-        return transporter.sendMail({
-            to: to,
-            from: process.env.EMAIL_ID,
-            subject: subject,
-            html: html
-        });
-    } catch (err) {
-        const error = new Error(err);
-        error.httpStatusCode = 500;
-        return next(error);
+module.exports = {
+    sendMailToCustomer: async ({ to, subject, html, attachement }) => {
+        console.log(to);
+        try {
+            return transporter.sendMail({
+                to: to,
+                from: process.env.EMAIL_ID,
+                subject: subject,
+                html: html,
+                attachments: [attachement]
+            });
+        } catch (err) {
+            const error = new Error(err);
+            error.httpStatusCode = 500;
+            return next(error);
+        }
     }
-}
-
-module.exports = mailer;
+};
