@@ -1,4 +1,7 @@
 .vscode/
+nodemon.json
+data/invoices/invoice-*
+data/images/QR-*
 
 # Logs
 logs

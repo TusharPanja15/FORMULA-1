@@ -24,6 +24,9 @@ const userSchema = new Schema({
             }
         }]
     }
+}, {
+    timestamps: true, 
+    versionKey: false
 });
 
 userSchema.methods.addToCart = function (product) {

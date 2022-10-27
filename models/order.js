@@ -5,25 +5,26 @@ const Schema = mongoose.Schema;
 const ordersSchema = new Schema({
     products: [{
         product: {
-            type: Object,
+            type: Schema.Types.ObjectId,
+            ref: 'Event',
             required: true
         },
         quantity: {
             type: Number,
             required: true
-        }
+        },
+        _id: false
     }],
     user: {
-        name: {
-            type: String,
-            required: true
-        },
         userId: {
             type: Schema.Types.ObjectId,
             ref: 'User',
             required: true
         }
     }
+}, {
+    timestamps: true, 
+    versionKey: false
 });
 
 module.exports = mongoose.model('Order', ordersSchema);

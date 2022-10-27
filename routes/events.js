@@ -16,4 +16,6 @@ router.post('/create-order', eventsControlller.createOrder);
 
 router.get('/orders', eventsControlller.getOrders);
 
+router.get('/orders/:orderId', eventsControlller.getInvoice);
+
 module.exports = router;

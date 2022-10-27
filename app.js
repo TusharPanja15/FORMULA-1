@@ -10,7 +10,6 @@ const adminRoute = require('./routes/admin');
 const User = require('./models/user');
 
 const MONGODB_URI = `mongodb+srv://${process.env.MONGO_USER}:${process.env.MONGO_PASSWORD}@cluster0.qvv5l.mongodb.net/${process.env.MONGO_DEFAULT_DATABASE}?retryWrites=true&w=majority`;
-
 console.log(process.env.NODE_ENV)
 
 const app = express();
@@ -42,7 +41,7 @@ app.use('/events', eventRoute);
 app.use('/admin', adminRoute);
 
 app.use((error, req, res, next) => {
-    // console.log(error)
+    console.log(error)
     res.status(500).json({
         message: "Something went wrong!",
         error: error
