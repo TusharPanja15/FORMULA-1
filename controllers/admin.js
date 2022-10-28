@@ -76,8 +76,8 @@ exports.check_qrcode = async (req, res, next) => {
             data: ticket
         });
 
-        // ticket.isValid = false;
-        // ticket.save();
+        ticket.isValid = false;
+        ticket.save();
     } catch (err) {
         if (!err.statusCode) {
             err.statusCode = 500;
