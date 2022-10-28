@@ -21,6 +21,11 @@ const ordersSchema = new Schema({
             ref: 'User',
             required: true
         }
+    },
+    isValid: {
+        type: Boolean,
+        required: true,
+        default: true
     }
 }, {
     timestamps: true, 

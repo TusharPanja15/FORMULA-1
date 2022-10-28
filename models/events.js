@@ -31,6 +31,14 @@ const eventsScema = new Schema({
     eventDate: {
         type: String,
         required: true
+    },
+    eventStartDate: {
+        type: Date,
+        required: true
+    },
+    eventEndDate: {
+        type: Date,
+        required: true
     }
 }, {
     timestamps: true, 
