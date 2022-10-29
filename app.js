@@ -41,12 +41,12 @@ app.use('/events', eventRoute);
 app.use('/admin', adminRoute);
 
 app.use((error, req, res, next) => {
-    console.log(error)
-    res.status(500).json({
-        message: "Something went wrong!",
-        error: error
-    });
-});
+    console.log(error);
+    const status = error.statusCode || 500;
+    const message = error.message || 'Something went wrong!';
+    const data = error.data;
+    res.status(status).json({ status: status, message: message, data: data });
+})
 
 mongoose
     .connect(MONGODB_URI)
