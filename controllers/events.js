@@ -55,6 +55,13 @@ module.exports = {
 
         try {
             const event = await Event.findById(event_ID);
+
+            if (!event) {
+                const error = new Error('could not found event to add in cart.');
+                error.statusCode = 404;
+                throw error;
+            }
+            
             await req.user.addToCart(event);
 
             res.status(201).json({
@@ -69,9 +76,10 @@ module.exports = {
     },
 
     deleteCartProduct: async (req, res, next) => {
-        const event_ID = req.body.eventId;
+        //const event_ID = req.body.eventId;
         try {
-            await req.user.removeFromCart(event_ID);
+            // await req.user.removeFromCart(event_ID);
+            await req.user.clearCart();
 
             res.status(201).json({
                 message: "Item deleted from cart."
