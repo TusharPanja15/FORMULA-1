@@ -10,8 +10,6 @@ const Event = require('../models/events');
 const mailer = require('../utils/mailer');
 const qrCode = require('../utils/QRCode');
 
-const pdfDoc = new PDFDocument();
-
 module.exports = {
     getEvents: async (req, res, next) => {
         try {
@@ -61,7 +59,7 @@ module.exports = {
                 error.statusCode = 404;
                 throw error;
             }
-            
+
             await req.user.addToCart(event);
 
             res.status(201).json({
@@ -150,8 +148,9 @@ module.exports = {
     },
 
     getInvoice: async (req, res, next) => {
+        const id = req.params.orderId;
+
         try {
-            const id = req.params.orderId;
             const order = await Order.findOne({ _id: id });
 
             console.log(order)
@@ -162,21 +161,108 @@ module.exports = {
                 throw error;
             }
 
-            const QRdata = JSON.stringify({
-                name: req.user.name,
-                userId: req.user.email,
-                ticketId: order._id
-            });
-
             const invoiceName = 'invoice-' + order._id + '.pdf';
             const invoicePath = path.join('data', 'invoices', invoiceName);
             const QRImageName = 'QR-' + order._id + '.png';
             const QRImagePath = path.join('data', 'images', QRImageName);
 
-            await qrCode.generate(QRImagePath, QRdata);
+            await qrCode.generate(
+                QRImagePath,
+                JSON.stringify({
+                    name: req.user.name,
+                    userId: req.user.email,
+                    ticketId: order._id
+                }));
+
+            let pdfDoc = new PDFDocument({
+                size: [300, 500],
+                margins: { top: 10, bottom: 10, left: 10, right: 10 }
+            })
+
+            let pdfBackgroundColor = 'black';
 
             pdfDoc.pipe(fs.createWriteStream(invoicePath));
-            pdfDoc.image(QRImagePath, 0, 15, { fit: [200, 200], align: 'center', valign: 'center' });
+
+            pdfDoc.rect(0, 0, 1000, 1000).fill(pdfBackgroundColor);  // outer-rect
+            pdfDoc.roundedRect(15, 25, 270, 450, 5).fill('white');  // inner-rect
+
+            pdfDoc
+                .image(path.join('data', 'images', 'formula1.png'), 35, 55, {
+                    fit: [100, 100],
+                    align: 'center',
+                    valign: 'center'
+                });  // Logo image
+
+            pdfDoc
+                .fontSize(15)
+                .font('Courier-Bold')
+                .fill('black')
+                .text(order.products[0].product.eventName, 140, 80, {
+                    height: 100,
+                    width: 150
+                });  // event-name
+
+            pdfDoc
+                .fontSize(10)
+                .font('Courier')
+                .fill('black')
+                .text('Venue Date', 50, 200, {
+                    height: 10,
+                    width: 100
+                });  // event-date-time-header
+
+            pdfDoc
+                .fontSize(22)
+                .font('Helvetica-Bold')
+                .fill('black')
+                .text(order.products[0].product.eventDate, 50, 220, {
+                    height: 10,
+                    width: 100
+                });  // event-date-time
+
+            pdfDoc
+                .fontSize(10)
+                .font('Courier')
+                .fill('black')
+                .text('Entry Gate', 170, 200, {
+                    height: 10,
+                    width: 100
+                });  // event-location-header
+
+            pdfDoc
+                .fontSize(22)
+                .font('Helvetica-Bold')
+                .fill('black')
+                .text('6D', 170, 220, {
+                    height: 10,
+                    width: 100
+                });  // event-location
+
+            pdfDoc.circle(15, 190, 10).fill(pdfBackgroundColor);  // left-top
+            pdfDoc.circle(15, 260, 10).fill(pdfBackgroundColor);  // left-bottom
+            pdfDoc.circle(285, 190, 10).fill(pdfBackgroundColor);  // right-top
+            pdfDoc.circle(285, 260, 10).fill(pdfBackgroundColor);  // right-bottom
+
+            pdfDoc.moveTo(25, 190).lineTo(275, 190).dash(2, { space: 3 }).stroke('grey');  // horizontal-dashed
+            pdfDoc.moveTo(160, 258).lineTo(160, 191).dash(2, { space: 3 }).stroke('grey');  // vertical-dashed
+            pdfDoc.moveTo(25, 260).lineTo(275, 260).dash(2, { space: 3 }).stroke('grey');  // horizontal-dashed
+
+            pdfDoc.image(QRImagePath, 75, 295, { fit: [150, 150], align: 'center', valign: 'center' });  // QR image
+            pdfDoc
+                .fontSize(10).font('Courier').fill('black').text(order._id, 79, 450, {
+                    height: 10,
+                    width: 150,
+                });  // QR-code id
+
+            pdfDoc
+                .fontSize(7)
+                .font('Helvetica')
+                .fill('white')
+                .text('Formula 1 Company. All rights reserved', 90, 485, {
+                    height: 10,
+                    width: 200
+                });  // footer
+
             pdfDoc.end();
 
             await mailer.sendMailToCustomer({
@@ -194,7 +280,7 @@ module.exports = {
                     filename: invoiceName,
                     path: invoicePath
                 }
-            })
+            });
 
             res.status(201).json({
                 message: `Mail sent to '${process.env.TEST_EMAIL}'`

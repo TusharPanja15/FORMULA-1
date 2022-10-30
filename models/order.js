@@ -5,8 +5,7 @@ const Schema = mongoose.Schema;
 const ordersSchema = new Schema({
     products: [{
         product: {
-            type: Schema.Types.ObjectId,
-            ref: 'Event',
+            type: Object,
             required: true
         },
         quantity: {
