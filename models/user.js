@@ -37,6 +37,12 @@ userSchema.methods.addToCart = function (product) {
     let newQuantity = 1;
     const updatedCartItems = [...this.cart.items];
 
+    if (this.cart.items.length !== 0 && cartProductIndex < 0) {
+        const error = new Error(`Could't add different events in the cart at the same time. Please proceed with payment or clear you cart first.`);
+        error.statusCode = 422;
+        throw error;
+    }
+
     if (cartProductIndex >= 0) {
         newQuantity = this.cart.items[cartProductIndex].quantity + 1;
         updatedCartItems[cartProductIndex].quantity = newQuantity;
@@ -64,8 +70,6 @@ userSchema.methods.removeFromCart = function (productId) {
     this.cart.items = updatedCartItems;
     return this.save();
 };
-
-userSchema.methods.removeFromCartCron = function () { };
 
 userSchema.methods.clearCart = function () {
     this.cart = { items: [] }

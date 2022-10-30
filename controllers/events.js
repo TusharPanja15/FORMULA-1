@@ -26,9 +26,10 @@ module.exports = {
 
             logger.info("Events fetched");
         } catch (err) {
-            const error = new Error(err);
-            error.httpStatusCode = 500;
-            return next(error);
+            if (!err.statusCode) {
+                err.statusCode = 500;
+            }
+            next(err);
         }
     },
 
@@ -42,9 +43,10 @@ module.exports = {
                 data: products
             });
         } catch (err) {
-            const error = new Error(err);
-            error.httpStatusCode = 500;
-            return next(error);
+            if (!err.statusCode) {
+                err.statusCode = 500;
+            }
+            next(err);
         }
     },
 
@@ -53,30 +55,40 @@ module.exports = {
 
         try {
             const event = await Event.findById(event_ID);
+
+            if (!event) {
+                const error = new Error('could not found event to add in cart.');
+                error.statusCode = 404;
+                throw error;
+            }
+            
             await req.user.addToCart(event);
 
             res.status(201).json({
                 message: "Event added to Cart."
             });
         } catch (err) {
-            const error = new Error(err);
-            error.httpStatusCode = 500;
-            return next(error);
+            if (!err.statusCode) {
+                err.statusCode = 500;
+            }
+            next(err);
         }
     },
 
     deleteCartProduct: async (req, res, next) => {
-        const event_ID = req.body.eventId;
+        //const event_ID = req.body.eventId;
         try {
-            await req.user.removeFromCart(event_ID);
+            // await req.user.removeFromCart(event_ID);
+            await req.user.clearCart();
 
             res.status(201).json({
                 message: "Item deleted from cart."
             });
         } catch (err) {
-            const error = new Error(err);
-            error.httpStatusCode = 500;
-            return next(error);
+            if (!err.statusCode) {
+                err.statusCode = 500;
+            }
+            next(err);
         }
     },
 
@@ -89,9 +101,10 @@ module.exports = {
                 data: orders
             });
         } catch (err) {
-            const error = new Error(err);
-            error.httpStatusCode = 500;
-            return next(error);
+            if (!err.statusCode) {
+                err.statusCode = 500;
+            }
+            next(err);
         }
     },
 
@@ -100,9 +113,9 @@ module.exports = {
             const user = await req.user.populate('cart.items.eventId');
 
             if (user.cart.items.length == 0) {
-                res.status(404).json({
-                    message: "no cart items found."
-                });
+                const error = new Error('no cart items found.');
+                error.statusCode = 404;
+                throw error;
             }
 
             const products = user.cart.items.map(i => {
@@ -129,9 +142,10 @@ module.exports = {
                 }
             });
         } catch (err) {
-            const error = new Error(err);
-            error.httpStatusCode = 500;
-            return next(error);
+            if (!err.statusCode) {
+                err.statusCode = 500;
+            }
+            next(err);
         }
     },
 
@@ -143,9 +157,9 @@ module.exports = {
             console.log(order)
 
             if (!order) {
-                res.status(404).json({
-                    message: "no Order found"
-                });
+                const error = new Error('no Order found!');
+                error.statusCode = 401;
+                throw error;
             }
 
             const QRdata = JSON.stringify({
@@ -186,9 +200,10 @@ module.exports = {
                 message: `Mail sent to '${process.env.TEST_EMAIL}'`
             });
         } catch (err) {
-            const error = new Error(err);
-            error.httpStatusCode = 500;
-            return next(error);
+            if (!err.statusCode) {
+                err.statusCode = 500;
+            }
+            next(err);
         }
     }
 };
