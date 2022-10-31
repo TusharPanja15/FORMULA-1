@@ -184,7 +184,7 @@ module.exports = {
             pdfDoc.pipe(fs.createWriteStream(invoicePath));
 
             pdfDoc.rect(0, 0, 1000, 1000).fill(pdfBackgroundColor);  // outer-rect
-            pdfDoc.roundedRect(15, 25, 270, 450, 5).fill('white');  // inner-rect
+            pdfDoc.roundedRect(25, 25, 250, 450, 5).fill('white');  // inner-rect
 
             pdfDoc
                 .image(path.join('data', 'images', 'formula1.png'), 35, 55, {
@@ -238,18 +238,18 @@ module.exports = {
                     width: 100
                 });  // event-location
 
-            pdfDoc.circle(15, 190, 10).fill(pdfBackgroundColor);  // left-top
-            pdfDoc.circle(15, 260, 10).fill(pdfBackgroundColor);  // left-bottom
-            pdfDoc.circle(285, 190, 10).fill(pdfBackgroundColor);  // right-top
-            pdfDoc.circle(285, 260, 10).fill(pdfBackgroundColor);  // right-bottom
+            pdfDoc.circle(25, 190, 10).fill(pdfBackgroundColor);  // left-top
+            pdfDoc.circle(25, 250, 10).fill(pdfBackgroundColor);  // left-bottom
+            pdfDoc.circle(275, 190, 10).fill(pdfBackgroundColor);  // right-top
+            pdfDoc.circle(275, 250, 10).fill(pdfBackgroundColor);  // right-bottom
 
-            pdfDoc.moveTo(25, 190).lineTo(275, 190).dash(2, { space: 3 }).stroke('grey');  // horizontal-dashed
-            pdfDoc.moveTo(160, 258).lineTo(160, 191).dash(2, { space: 3 }).stroke('grey');  // vertical-dashed
-            pdfDoc.moveTo(25, 260).lineTo(275, 260).dash(2, { space: 3 }).stroke('grey');  // horizontal-dashed
+            pdfDoc.moveTo(35, 190).lineTo(265, 190).dash(2, { space: 3 }).stroke('grey');  // horizontal-dashed
+            pdfDoc.moveTo(160, 240).lineTo(160, 195).dash(2, { space: 3 }).stroke('grey');  // vertical-dashed
+            pdfDoc.moveTo(35, 250).lineTo(265, 250).dash(2, { space: 3 }).stroke('grey');  // horizontal-dashed
 
-            pdfDoc.image(QRImagePath, 75, 295, { fit: [150, 150], align: 'center', valign: 'center' });  // QR image
+            pdfDoc.image(QRImagePath, 77, 285, { fit: [150, 150], align: 'center', valign: 'center' });  // QR image
             pdfDoc
-                .fontSize(10).font('Courier').fill('black').text(order._id, 79, 450, {
+                .fontSize(10).font('Courier').fill('black').text(order._id, 82, 448, {
                     height: 10,
                     width: 150,
                 });  // QR-code id
@@ -258,29 +258,39 @@ module.exports = {
                 .fontSize(7)
                 .font('Helvetica')
                 .fill('white')
-                .text('Formula 1 Company. All rights reserved', 90, 485, {
+                .text('Formula 1 Company. All rights reserved', 91, 485, {
                     height: 10,
                     width: 200
                 });  // footer
 
+            pdfDoc
+                .rotate(270, { origin: [100, 190] })
+                .fontSize(7)
+                .font('Helvetica-BoldOblique')
+                .fill('white').text('***This ticket is just for demonstration purposes only', -60, 100, {
+                    height: 400,
+                    width: 450,
+                    characterSpacing : 1
+                });  // side-disclamer
+
             pdfDoc.end();
 
-            await mailer.sendMailToCustomer({
-                to: process.env.TEST_EMAIL,
-                subject: `[ ORDER_ID: ${order._id} ] has been created!`,
-                html: `
-                    <h5>Hi ${req.user.name},</h5>
-                    <p>Thanks for shopping with us!</p>
-                    <p>Your order with id '${order._id}' has been placed successfully.</p>
-                    <p>Please find the invoice attached to your order and enjoy your weekend with us.</p>
-                    <h5>Thanks and Regards,</h5>
-                    <h5>FIA</h5>
-                `,
-                attachement: {
-                    filename: invoiceName,
-                    path: invoicePath
-                }
-            });
+            // await mailer.sendMailToCustomer({
+            //     to: process.env.TEST_EMAIL,
+            //     subject: `[ ORDER_ID: ${order._id} ] has been created!`,
+            //     html: `
+            //         <h5>Hi ${req.user.name},</h5>
+            //         <p>Thanks for shopping with us!</p>
+            //         <p>Your order with id '${order._id}' has been placed successfully.</p>
+            //         <p>Please find the invoice attached to your order and enjoy your weekend with us.</p>
+            //         <h5>Thanks and Regards,</h5>
+            //         <h5>FIA</h5>
+            //     `,
+            //     attachement: {
+            //         filename: invoiceName,
+            //         path: invoicePath
+            //     }
+            // });
 
             res.status(201).json({
                 message: `Mail sent to '${process.env.TEST_EMAIL}'`
