@@ -187,11 +187,18 @@ module.exports = {
             pdfDoc.roundedRect(25, 25, 250, 450, 5).fill('white');  // inner-rect
 
             pdfDoc
-                .image(path.join('data', 'images', 'formula1.png'), 35, 55, {
+                .image(path.join('data', 'images', 'formula1.png'), 35, 35, {
                     fit: [100, 100],
                     align: 'center',
                     valign: 'center'
                 });  // Logo image
+
+            pdfDoc
+                .image(path.join('data', 'images', 'fia-road-safety.png'), 35, 90, {
+                    fit: [100, 100],
+                    align: 'center',
+                    valign: 'center'
+                });  // Logo image 2
 
             pdfDoc
                 .fontSize(15)
@@ -238,18 +245,18 @@ module.exports = {
                     width: 100
                 });  // event-location
 
-            pdfDoc.circle(25, 190, 10).fill(pdfBackgroundColor);  // left-top
-            pdfDoc.circle(25, 250, 10).fill(pdfBackgroundColor);  // left-bottom
-            pdfDoc.circle(275, 190, 10).fill(pdfBackgroundColor);  // right-top
-            pdfDoc.circle(275, 250, 10).fill(pdfBackgroundColor);  // right-bottom
+            pdfDoc.circle(26, 190, 10).fill(pdfBackgroundColor);  // left-top
+            pdfDoc.circle(26, 250, 10).fill(pdfBackgroundColor);  // left-bottom
+            pdfDoc.circle(274, 190, 10).fill(pdfBackgroundColor);  // right-top
+            pdfDoc.circle(274, 250, 10).fill(pdfBackgroundColor);  // right-bottom
 
-            pdfDoc.moveTo(35, 190).lineTo(265, 190).dash(2, { space: 3 }).stroke('grey');  // horizontal-dashed
+            pdfDoc.moveTo(37, 190).lineTo(265, 190).dash(2, { space: 3 }).stroke('grey');  // horizontal-dashed
             pdfDoc.moveTo(160, 240).lineTo(160, 195).dash(2, { space: 3 }).stroke('grey');  // vertical-dashed
-            pdfDoc.moveTo(35, 250).lineTo(265, 250).dash(2, { space: 3 }).stroke('grey');  // horizontal-dashed
+            pdfDoc.moveTo(37, 250).lineTo(265, 250).dash(2, { space: 3 }).stroke('grey');  // horizontal-dashed
 
-            pdfDoc.image(QRImagePath, 77, 285, { fit: [150, 150], align: 'center', valign: 'center' });  // QR image
+            pdfDoc.image(QRImagePath, 75, 285, { fit: [150, 150], align: 'center', valign: 'center' });  // QR image
             pdfDoc
-                .fontSize(10).font('Courier').fill('black').text(order._id, 82, 448, {
+                .fontSize(10).font('Courier').fill('black').text(order._id, 79, 446, {
                     height: 10,
                     width: 150,
                 });  // QR-code id
@@ -258,7 +265,7 @@ module.exports = {
                 .fontSize(7)
                 .font('Helvetica')
                 .fill('white')
-                .text('Formula 1 Company. All rights reserved', 91, 485, {
+                .text('Formula 1 Company. All rights reserved', 90, 485, {
                     height: 10,
                     width: 200
                 });  // footer
@@ -267,10 +274,10 @@ module.exports = {
                 .rotate(270, { origin: [100, 190] })
                 .fontSize(7)
                 .font('Helvetica-BoldOblique')
-                .fill('white').text('***This ticket is just for demonstration purposes only', -60, 100, {
+                .fill('white').text('***For development purposes only', -10, 100, {
                     height: 400,
                     width: 450,
-                    characterSpacing : 1
+                    characterSpacing: 1
                 });  // side-disclamer
 
             pdfDoc.end();
