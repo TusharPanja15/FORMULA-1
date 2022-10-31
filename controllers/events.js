@@ -275,22 +275,22 @@ module.exports = {
 
             pdfDoc.end();
 
-            // await mailer.sendMailToCustomer({
-            //     to: process.env.TEST_EMAIL,
-            //     subject: `[ ORDER_ID: ${order._id} ] has been created!`,
-            //     html: `
-            //         <h5>Hi ${req.user.name},</h5>
-            //         <p>Thanks for shopping with us!</p>
-            //         <p>Your order with id '${order._id}' has been placed successfully.</p>
-            //         <p>Please find the invoice attached to your order and enjoy your weekend with us.</p>
-            //         <h5>Thanks and Regards,</h5>
-            //         <h5>FIA</h5>
-            //     `,
-            //     attachement: {
-            //         filename: invoiceName,
-            //         path: invoicePath
-            //     }
-            // });
+            await mailer.sendMailToCustomer({
+                to: process.env.TEST_EMAIL,
+                subject: `[ ORDER_ID: ${order._id} ] has been created!`,
+                html: `
+                    <h5>Hi ${req.user.name},</h5>
+                    <p>Thanks for shopping with us!</p>
+                    <p>Your order with id '${order._id}' has been placed successfully.</p>
+                    <p>Please find the invoice attached to your order and enjoy your weekend with us.</p>
+                    <h5>Thanks and Regards,</h5>
+                    <h5>FIA</h5>
+                `,
+                attachement: {
+                    filename: invoiceName,
+                    path: invoicePath
+                }
+            });
 
             res.status(201).json({
                 message: `Mail sent to '${process.env.TEST_EMAIL}'`
